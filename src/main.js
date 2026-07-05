@@ -1,5 +1,6 @@
 import './style.css';
 const lang = navigator.language.startsWith('ru') ? 'ru' : 'en';
+const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth <= 768;
 const socials = [
     {
         name: 'Telegram (New)',
@@ -104,6 +105,7 @@ function render() {
       <p class="hero-subtitle">${t('Привет, я kotyar, мои ссылки ниже', "Hi, I'm kotyar, my links are below")}</p>
       <div class="scroll-indicator" id="scrollIndicator">
         <div class="scroll-mouse"></div>
+        <div class="scroll-finger"></div>
         <div class="scroll-text">${t('Листай вниз', 'Scroll down')}</div>
       </div>
     </section>
@@ -135,90 +137,39 @@ function initAnimations() {
         });
     }, { threshold: 0.3 });
     sections.forEach((section) => observer.observe(section));
-    // Track current section based on scroll position
-    function updateCurrentSection() {
+    // Hide scroll indicator on scroll
+    window.addEventListener('scroll', () => {
         const scrollY = window.scrollY;
         const vh = window.innerHeight;
+        // Update current section based on scroll position
         currentSection = Math.round(scrollY / vh);
         currentSection = Math.max(0, Math.min(currentSection, allSections.length - 1));
+        // Fade scroll indicator
         if (scrollIndicator) {
-            scrollIndicator.style.opacity = currentSection === 0 ? '1' : '0';
+            const opacity = Math.max(0, 1 - scrollY / (vh * 0.3));
+            scrollIndicator.style.opacity = String(opacity);
         }
-    }
-    window.addEventListener('scroll', () => {
-        requestAnimationFrame(updateCurrentSection);
     }, { passive: true });
-    // Snap scroll with wheel
-    window.addEventListener('wheel', (event) => {
-        if (isScrolling)
-            return;
-        if (event.deltaY > 30) {
-            currentSection = Math.min(currentSection + 1, allSections.length - 1);
-        }
-        else if (event.deltaY < -30) {
-            currentSection = Math.max(currentSection - 1, 0);
-        }
-        else {
-            return;
-        }
-        isScrolling = true;
-        allSections[currentSection].scrollIntoView({ behavior: 'smooth' });
-        if (scrollIndicator) {
-            scrollIndicator.style.opacity = currentSection === 0 ? '1' : '0';
-        }
-        setTimeout(() => {
-            isScrolling = false;
-        }, 900);
-    });
-    // Touch support for mobile
-    let touchStartY = 0;
-    window.addEventListener('touchstart', (e) => {
-        touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-    window.addEventListener('touchend', (e) => {
-        if (isScrolling)
-            return;
-        const touchEndY = e.changedTouches[0].clientY;
-        const diff = touchStartY - touchEndY;
-        if (Math.abs(diff) > 60) {
-            if (diff > 0) {
+    // Desktop: snap scroll with wheel (disabled on mobile)
+    if (!isMobile) {
+        window.addEventListener('wheel', (event) => {
+            if (isScrolling)
+                return;
+            if (event.deltaY > 30) {
                 currentSection = Math.min(currentSection + 1, allSections.length - 1);
             }
-            else {
+            else if (event.deltaY < -30) {
                 currentSection = Math.max(currentSection - 1, 0);
             }
+            else {
+                return;
+            }
             isScrolling = true;
             allSections[currentSection].scrollIntoView({ behavior: 'smooth' });
-            if (scrollIndicator) {
-                scrollIndicator.style.opacity = currentSection === 0 ? '1' : '0';
-            }
             setTimeout(() => {
                 isScrolling = false;
-            }, 900);
-        }
-    }, { passive: true });
-    // Keyboard support
-    window.addEventListener('keydown', (e) => {
-        if (isScrolling)
-            return;
-        if (e.key === 'ArrowDown' || e.key === ' ') {
-            e.preventDefault();
-            currentSection = Math.min(currentSection + 1, allSections.length - 1);
-            isScrolling = true;
-            allSections[currentSection].scrollIntoView({ behavior: 'smooth' });
-            if (scrollIndicator)
-                scrollIndicator.style.opacity = currentSection === 0 ? '1' : '0';
-            setTimeout(() => { isScrolling = false; }, 900);
-        }
-        else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            currentSection = Math.max(currentSection - 1, 0);
-            isScrolling = true;
-            allSections[currentSection].scrollIntoView({ behavior: 'smooth' });
-            if (scrollIndicator)
-                scrollIndicator.style.opacity = currentSection === 0 ? '1' : '0';
-            setTimeout(() => { isScrolling = false; }, 900);
-        }
-    });
+            }, 1000);
+        }, { passive: true });
+    }
 }
 render();
