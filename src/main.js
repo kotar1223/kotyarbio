@@ -105,7 +105,7 @@ function render() {
       <p class="hero-subtitle">${t('Привет, я kotyar, мои ссылки ниже', "Hi, I'm kotyar, my links are below")}</p>
       <div class="scroll-indicator" id="scrollIndicator">
         <div class="scroll-mouse"></div>
-        <div class="scroll-finger"></div>
+        <div class="scroll-finger">👆</div>
         <div class="scroll-text">${t('Листай вниз', 'Scroll down')}</div>
       </div>
     </section>

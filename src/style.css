@@ -110,11 +110,13 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   opacity: 0;
   animation: fadeInUp 1s ease 0.8s forwards;
   transition: opacity 0.6s ease;
   z-index: 10;
+  pointer-events: none;
 }
 
 /* Desktop mouse */
@@ -146,7 +148,7 @@ body {
 
 /* Mobile finger - hidden on desktop */
 .scroll-finger {
-  display: none;
+  display: none !important;
 }
 
 .scroll-text {
@@ -343,7 +345,12 @@ body {
 /* ===== MOBILE ===== */
 @media (max-width: 768px) {
   html {
-    scroll-snap-type: none;
+    scroll-snap-type: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  body {
+    -webkit-overflow-scrolling: touch;
   }
 
   .hero-title {
@@ -352,8 +359,9 @@ body {
 
   .social-section {
     padding: 0 6%;
-    height: 100vh;
-    min-height: -webkit-fill-available;
+    height: auto;
+    min-height: 100vh;
+    scroll-snap-align: none !important;
   }
 
   .social-section.left,
@@ -393,48 +401,22 @@ body {
 
   /* Hide mouse, show finger on mobile */
   .scroll-mouse {
-    display: none;
+    display: none !important;
   }
 
   .scroll-finger {
-    display: block;
-    width: 32px;
-    height: 32px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    position: relative;
-  }
-
-  .scroll-finger::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 8px solid rgba(255, 255, 255, 0.4);
-    animation: fingerBounce 1.5s ease-in-out infinite;
-  }
-
-  .scroll-finger::after {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 14px;
-    height: 18px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 7px 7px 4px 4px;
-    background: transparent;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    animation: fingerBounce 2s ease-in-out infinite;
   }
 
   @keyframes fingerBounce {
-    0%, 100% { transform: translate(-50%, -50%) translateY(0); }
-    50% { transform: translate(-50%, -50%) translateY(6px); }
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
   }
 
   .scroll-text {
