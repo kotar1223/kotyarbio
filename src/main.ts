@@ -145,20 +145,6 @@ function initAnimations(): void {
   const sections = document.querySelectorAll<HTMLElement>('.social-section');
   const allSections = document.querySelectorAll<HTMLElement>('.hero, .social-section, .footer');
   const scrollIndicator = document.getElementById('scrollIndicator');
-  const hero = document.getElementById('hero');
-
-  // Position scroll indicator based on actual screen center
-  function positionScrollIndicator(): void {
-    if (!scrollIndicator || !hero) return;
-    const viewportCenter = window.innerHeight / 2;
-    // Place scroll indicator 200px below the title center
-    const indicatorY = viewportCenter + 200;
-    scrollIndicator.style.top = `${indicatorY}px`;
-    scrollIndicator.style.bottom = 'auto';
-  }
-
-  positionScrollIndicator();
-  window.addEventListener('resize', positionScrollIndicator);
 
   // IntersectionObserver for section animations
   const observer = new IntersectionObserver(
