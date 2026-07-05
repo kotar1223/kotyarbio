@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/kotyar-bio/',
+  base: '/kotyarbio/',
   build: {
     outDir: 'dist',
   },
